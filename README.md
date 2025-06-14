@@ -43,6 +43,8 @@ Visit: `http://localhost:8501`
 ## 📊 Dataset:
 
 TMDB 5000 Movie Dataset (Kaggle)
+https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata
+
 
 ## 👨‍💼 Author:
 
