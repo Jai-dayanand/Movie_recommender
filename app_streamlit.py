@@ -7,22 +7,45 @@ data_loader = DataLoader('data/tmdb_5000_movies.csv')
 movies = data_loader.load_data()
 recommender = Recommender(movies)
 
-st.title("🎬 Movie Recommender System")
+# Page config
+st.set_page_config(page_title="Movie Recommender", page_icon="🎥", layout="wide")
 
-movie_list = movies['title'].sort_values().unique()
-selected_movie = st.selectbox("Select a movie to get recommendations:", movie_list)
+st.markdown("<h1 style='text-align: center; color: #FF6F61;'>🎬 AI-Powered Movie Recommender</h1>", unsafe_allow_html=True)
+st.write("---")
 
-if st.button("Recommend"):
+# Movie selection
+col1, col2 = st.columns(2)
+
+with col1:
+    movie_list = movies['title'].sort_values().unique()
+    selected_movie = st.selectbox("Select a movie:", movie_list)
+
+with col2:
+    all_genres = sorted(set(" ".join(movies['genres']).split()))
+    genre_filter = st.multiselect("Optional: Filter recommendations by genre", all_genres)
+
+# Recommendation button
+if st.button("Get Recommendations 🎯", use_container_width=True):
     recommendations = recommender.recommend(selected_movie)
+
     if isinstance(recommendations, str):
         st.error(recommendations)
     else:
-        st.subheader("Top Recommendations:")
-        for movie in recommendations:
-            st.write(movie)
+        st.subheader("🎯 Recommended Movies:")
+        count = 0
+        for movie_title in recommendations:
+            # Apply genre filter
+            movie_row = movies[movies['title'] == movie_title]
+            if genre_filter:
+                movie_genres = movie_row.iloc[0]['genres'].split()
+                if not any(g in movie_genres for g in genre_filter):
+                    continue
+            count += 1
+            st.write(f"**{count}. {movie_title}**")
 
-# BONUS: explore genres
-if st.checkbox("Browse by Genre"):
-    genre = st.selectbox("Select genre:", sorted(set(" ".join(movies['genres']).split())))
-    filtered = movies[movies['genres'].str.contains(genre)]
-    st.write(filtered[['title', 'genres']])
+        if count == 0:
+            st.warning("No recommendations match the selected genre filter.")
+
+# Add full dataset viewer (optional)
+with st.expander("🔎 Browse Full Dataset"):
+    st.dataframe(movies[['title', 'genres', 'overview']])
