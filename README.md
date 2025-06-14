@@ -4,25 +4,6 @@ A Content-Based Movie Recommender System using NLP, vectorization, and cosine si
 
 ---
 
-## 💂 Project Structure
-
-Movie\_recommender/
-│
-├── data/
-│   ├── tmdb\_5000\_movies.csv
-│   └── tmdb\_5000\_credits.csv
-│
-├── src/
-│   ├── data\_loader.py
-│   └── recommender.py
-│
-├── app\_streamlit.py
-├── requirements.txt
-├── .gitignore
-└── README.md
-
----
-
 ## 🚀 Features
 
 * Content-based recommendation
