@@ -10,7 +10,7 @@ recommender = Recommender(movies)
 # Page config
 st.set_page_config(page_title="Movie Recommender", page_icon="🎥", layout="wide")
 
-st.markdown("<h1 style='text-align: center; color: #FF6F61;'>🎬 AI-Powered Movie Recommender</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #FF6F61;'>🎬 Movie Recommender Lite</h1>", unsafe_allow_html=True)
 st.write("---")
 
 # Movie selection
