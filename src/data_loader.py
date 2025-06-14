@@ -1,25 +1,30 @@
 import pandas as pd
+import ast
 
 class DataLoader:
-    def __init__(self, movies_path='data/tmdb_5000_movies.csv', credits_path='data/tmdb_5000_credits.csv'):
-        self.movies_path = movies_path
-        self.credits_path = credits_path
+    def __init__(self, movie_path):
+        self.movie_path = movie_path
 
     def load_data(self):
-        movies = pd.read_csv(self.movies_path)
-        credits = pd.read_csv(self.credits_path)
+        movies = pd.read_csv(self.movie_path)
 
-        # Rename movie_id to id for merging
-        credits.rename(columns={'movie_id': 'id'}, inplace=True)
+        # Parse genres and keywords columns
+        movies['genres'] = movies['genres'].apply(self.extract_names)
+        movies['keywords'] = movies['keywords'].apply(self.extract_names)
 
-        # Merge both datasets
-        movies = movies.merge(credits, on='id')
+        # Create 'tags' column combining genres + keywords + overview
+        movies['overview'] = movies['overview'].fillna('')
+        movies['tags'] = movies['overview'] + ' ' + movies['genres'] + ' ' + movies['keywords']
 
-        # Rename 'title_x' to 'title' to avoid KeyError
-        movies.rename(columns={'title_x': 'title'}, inplace=True)
-
-        # Drop unnecessary columns (note we use 'title' now)
-        movies = movies[['id', 'title', 'overview', 'genres', 'keywords', 'cast', 'crew']]
-        movies.dropna(inplace=True)
+        movies = movies[['id', 'title', 'overview', 'genres', 'keywords', 'tags']]
 
         return movies
+
+    def extract_names(self, obj):
+        try:
+            L = []
+            for item in ast.literal_eval(obj):
+                L.append(item['name'])
+            return " ".join(L)
+        except:
+            return ""
